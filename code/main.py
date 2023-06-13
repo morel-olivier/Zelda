@@ -4,6 +4,7 @@ import pygame
 
 from level import Level
 from settings import *
+from event import *
 
 
 class Game:
@@ -31,6 +32,15 @@ class Game:
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_m:
                         self.level.toggle_menu()
+                if event.type == ON_DEATH:
+                    self.screen.fill("#000000")
+                    self.screen.blit(("test")
+                    pygame.display.update()
+                    pygame.time.delay(1000)
+
+                    pygame.quit()
+                    sys.exit()
+
 
             self.screen.fill(WATER_COLOR)
             self.level.run()

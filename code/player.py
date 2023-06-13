@@ -5,6 +5,8 @@ import pygame
 from entity import Entity
 from settings import *
 from support import import_folder
+from event import *
+
 
 
 class Player(Entity):
@@ -245,7 +247,8 @@ class Player(Entity):
 
     def check_death(self):
         if self.health <= 0:
-            self.health = 1
+            #self.health = 1
+            pygame.event.post(pygame.event.Event(ON_DEATH))
 
     def update(self):
         self.input()
