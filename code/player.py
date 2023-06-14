@@ -8,13 +8,13 @@ from support import import_folder
 from event import *
 
 
-
 class Player(Entity):
     def __init__(
         self, pos, groups, obstacle_sprites, create_attack, destroy_attack, create_magic
     ):
         super().__init__(groups)
-        self.image = pygame.image.load("../graphics/test/player.png").convert_alpha()
+        self.image = pygame.image.load(
+            "../graphics/test/player.png").convert_alpha()
         self.rect = self.image.get_rect(topleft=pos)
         self.hitbox = self.rect.inflate(-6, HITBOX_OFFSET["player"])
 
@@ -48,7 +48,8 @@ class Player(Entity):
         self.magic_switch_time = None
 
         # stats
-        self.stats = {"health": 100, "energy": 60, "attack": 10, "magic": 4, "speed": 5}
+        self.stats = {"health": 100, "energy": 60,
+                      "attack": 10, "magic": 4, "speed": 5}
         self.max_stats = {
             "health": 300,
             "energy": 140,
@@ -65,13 +66,15 @@ class Player(Entity):
         }
         self.health = self.stats["health"]
         self.energy = self.stats["energy"]
-        self.exp = 500
+        self.exp = 0
+        self.level = 1
+        self.next_level_exp = 200
         self.speed = self.stats["speed"]
 
         # damage timer
         self.vulnerable = True
         self.hurt_time = None
-        self.invicinbility_duration = 500
+        self.invicinbility_duration = 750
 
         # import a sound
         self.weapon_attack_sound = pygame.mixer.Sound("../audio/sword.wav")
@@ -135,7 +138,8 @@ class Player(Entity):
                 self.attacking = True
                 self.attack_time = pygame.time.get_ticks()
                 style = self.magic
-                strength = magic_data[self.magic]["strength"] + self.stats["magic"]
+                strength = magic_data[self.magic]["strength"] + \
+                    self.stats["magic"]
                 cost = magic_data[self.magic]["cost"]
                 self.create_magic(style, strength, cost)
 
@@ -230,7 +234,7 @@ class Player(Entity):
     def get_full_magic_damage(self):
         base_damage = self.stats["magic"]
         spell_damage = magic_data[self.magic]["strength"]
-        print(base_damage + spell_damage)
+        # print(base_damage + spell_damage)
         return base_damage + spell_damage
 
     def get_value_by_index(self, index):
@@ -247,8 +251,20 @@ class Player(Entity):
 
     def check_death(self):
         if self.health <= 0:
-            #self.health = 1
+            # self.health = 1
             pygame.event.post(pygame.event.Event(ON_DEATH))
+
+    def heal(self, amount):
+        self.health += amount
+        if self.health > self.stats["health"]:
+            self.health = self.stats["health"]
+
+    def xp_managment(self):
+        if self.exp >= self.next_level_exp:
+            self.exp = 0
+            self.level += 1
+            self.heal(self.stats["health"])
+            self.next_level_exp = self.next_level_exp * 2
 
     def update(self):
         self.input()
@@ -257,4 +273,5 @@ class Player(Entity):
         self.animate()
         self.move(self.stats["speed"])
         self.energy_recovery()
+        self.xp_managment()
         self.check_death()

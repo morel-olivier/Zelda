@@ -10,8 +10,12 @@ class UI:
         self.font = pygame.font.Font(UI_FONT, UI_FONT_SIZE)
 
         # bar setup
-        self.health_bar_rect = pygame.Rect(10, 10, HEALTH_BAR_WIDTH, BAR_HEIGHT)
-        self.energy_bar_rect = pygame.Rect(10, 34, ENERGY_BAR_WIDTH, BAR_HEIGHT)
+        self.health_bar_rect = pygame.Rect(
+            10, 10, HEALTH_BAR_WIDTH, BAR_HEIGHT)
+        self.energy_bar_rect = pygame.Rect(
+            10, 34, ENERGY_BAR_WIDTH, BAR_HEIGHT)
+        self.exp_bar_rect = pygame.Rect(
+            int((self.display_surface.get_width()-EXP_BAR_WIDTH)/2), 10, EXP_BAR_WIDTH, BAR_HEIGHT*2)
 
         # convert weapon dictionary
         self.weapon_graphics = []
@@ -42,25 +46,23 @@ class UI:
         pygame.draw.rect(self.display_surface, color, current_rect)
         pygame.draw.rect(self.display_surface, UI_BORDER_COLOR, bg_rect, 3)
 
-    def show_exp(self, exp):
-        text_surf = self.font.render(str(int(exp)), False, TEXT_COLOR)
+    def show_level(self, lvl):
+        text_surf = self.font.render(
+            "level : "+str(int(lvl)), False, TEXT_COLOR)
 
-        x = self.display_surface.get_width() - 20
-        y = self.display_surface.get_height() - 20
+        x = self.display_surface.get_width() / 2
+        y = 40
         text_rect = text_surf.get_rect(bottomright=(x, y))
 
-        pygame.draw.rect(self.display_surface, UI_BG_COLOR, text_rect.inflate(20, 20))
         self.display_surface.blit(text_surf, text_rect)
-        pygame.draw.rect(
-            self.display_surface, UI_BORDER_COLOR, text_rect.inflate(20, 20), 3
-        )
 
     def selection_box(self, left, top, has_switched):
         bg_rect = pygame.Rect(left, top, ITEM_BOX_SIZE, ITEM_BOX_SIZE)
         pygame.draw.rect(self.display_surface, UI_BG_COLOR, bg_rect)
 
         if has_switched:
-            pygame.draw.rect(self.display_surface, UI_BORDER_COLOR_ACTIVE, bg_rect, 3)
+            pygame.draw.rect(self.display_surface,
+                             UI_BORDER_COLOR_ACTIVE, bg_rect, 3)
         else:
             pygame.draw.rect(self.display_surface, UI_BORDER_COLOR, bg_rect, 3)
 
@@ -88,6 +90,10 @@ class UI:
             player.energy, player.stats["energy"], self.energy_bar_rect, ENERGY_COLOR
         )
 
-        self.show_exp(player.exp)
+        self.show_bar(
+            player.exp, player.next_level_exp, self.exp_bar_rect, EXP_COLOR
+        )
+
+        self.show_level(player.level)
         self.weapon_overlay(player.weapon_index, not player.can_switch_weapon)
         self.magic_overlay(player.magic_index, not player.can_switch_magic)

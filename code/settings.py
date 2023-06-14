@@ -9,6 +9,7 @@ HITBOX_OFFSET = {"player": -26, "object": -40, "grass": -10, "invisible": 0}
 BAR_HEIGHT = 20
 HEALTH_BAR_WIDTH = 200
 ENERGY_BAR_WIDTH = 140
+EXP_BAR_WIDTH = 300
 ITEM_BOX_SIZE = 80
 UI_FONT = "../graphics/font/joystix.ttf"
 UI_FONT_SIZE = 18
@@ -23,6 +24,7 @@ TEXT_COLOR = "#EEEEEE"
 HEALTH_COLOR = "red"
 ENERGY_COLOR = "blue"
 UI_BORDER_COLOR_ACTIVE = "gold"
+EXP_COLOR = "green"
 
 # upgrade menu
 TEXT_COLOR_SELECTED = "#111111"

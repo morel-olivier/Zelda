@@ -14,7 +14,18 @@ class Game:
         pygame.init()
         self.screen = pygame.display.set_mode((WIDTH, HEIGTH))
         pygame.display.set_caption("Zelda")
+        self.font_title = pygame.font.SysFont("Arial", 56)
+        self.font_text = pygame.font.SysFont("Arial", 24)
         self.clock = pygame.time.Clock()
+
+        self.level = Level()
+
+        # sound
+        main_sound = pygame.mixer.Sound("../audio/main.ogg")
+        main_sound.set_volume(0.5)
+        main_sound.play(loops=-1)
+
+    def reset(self):
 
         self.level = Level()
 
@@ -33,14 +44,32 @@ class Game:
                     if event.key == pygame.K_m:
                         self.level.toggle_menu()
                 if event.type == ON_DEATH:
+
+                    # Death screen
                     self.screen.fill("#000000")
-                    self.screen.blit(("test")
+                    txtsurf = self. font_title.render(
+                        "Game Over looser !", True, "#FFFFFF")
+                    self.screen.blit(
+                        txtsurf, ((self.screen.get_width() - txtsurf.get_width()) // 2,
+                                  (self.screen.get_height() - txtsurf.get_height()) // 2))
+
+                    txtsurf = self. font_text.render(
+                        "Press key to restart", True, "#FFFFFF")
+                    self.screen.blit(
+                        txtsurf, ((self.screen.get_width() - txtsurf.get_width()) // 2,
+                                  (self.screen.get_height() - txtsurf.get_height()) // 2 + 50))
                     pygame.display.update()
-                    pygame.time.delay(1000)
 
-                    pygame.quit()
-                    sys.exit()
-
+                    # Wait until the player press a key
+                    while True:
+                        for event in pygame.event.get():
+                            if event.type == pygame.QUIT:
+                                pygame.quit()
+                                sys.exit()
+                            if event.type == pygame.KEYDOWN:
+                                pygame.time.delay(1000)
+                                self.reset()
+                                self.run()
 
             self.screen.fill(WATER_COLOR)
             self.level.run()
